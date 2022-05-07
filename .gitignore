@@ -29,3 +29,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+/infra/.terraform.lock.hcl
+/infra/terraform.tfstate
+/infra/.terraform
