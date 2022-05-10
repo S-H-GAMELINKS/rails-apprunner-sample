@@ -1,27 +1,26 @@
-resource "aws_iam_role" "apprunner_role" {
-  name = "rails-apprunner-role"
+resource "aws_iam_role" "apprunner-service-role" {
+  name               = "rails-apprunner-service-role"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.apprunner-service-assume-policy.json
+}
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": [
-          "build.apprunner.amazonaws.com",
-          "tasks.apprunner.amazonaws.com"
-        ]
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "apprunner-service-assume-policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect = "Allow"
+    sid = ""
+
+    principals {
+      type        = "Service"
+      identifiers = [
+        "tasks.apprunner.amazonaws.com",
+        "build.apprunner.amazonaws.com"
+      ]
     }
-  ]
-}
-EOF
+  }
 }
 
-resource "aws_iam_role_policy_attachment" "role_attach" {
-  role       = aws_iam_role.apprunner_role.name
+resource "aws_iam_role_policy_attachment" "apprunner-service-role-attachment" {
+  role       = aws_iam_role.apprunner-service-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
