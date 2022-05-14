@@ -7,7 +7,8 @@ WORKDIR /app
 
 COPY . ./
 
-RUN bundle install
+RUN gem install bundler:2.3.13 && \
+    bundle install
 
 EXPOSE 3000
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
