@@ -26,3 +26,13 @@ resource "aws_db_instance" "db" {
     Name = "rails-apprunner-db"
   }
 }
+
+resource "null_resource" "db-migrate" {
+  provisioner "local-exec" {
+    command = "cd ../ && RAILS_ENV=production POSTGRES_DB=postgres POSTGRES_USER=postgres POSTGRES_PASSWORD=postgres POSTGRES_HOST=${aws_db_instance.db.address} bundle exec rails db:migrate"
+  }
+
+  depends_on = [
+    aws_db_instance.db
+  ]
+}

@@ -8,7 +8,7 @@ resource "aws_apprunner_service" "apprunner_service" {
     image_repository {
       image_configuration {
         port = "3000"
-        start_command = "bundle exec rails db:migrate"
+        start_command = "bundle exec rails s -b 0.0.0.0"
         runtime_environment_variables = {
           RAILS_ENV: "production",
           RAILS_HOSTS: "AppRunner HOST"
@@ -39,7 +39,10 @@ resource "aws_apprunner_service" "apprunner_service" {
     instance_role_arn = aws_iam_role.apprunner-service-role.arn
   }
 
-  depends_on = [aws_iam_role.apprunner-service-role]
+  depends_on = [
+    null_resource.default,
+    aws_iam_role.apprunner-service-role
+  ]
 }
 
 resource "aws_apprunner_vpc_connector" "vpc_connector" {
